@@ -1,0 +1,15 @@
+disabled_rules:
+  - line_length
+  - trailing_whitespace
+  - comment_spacing
+excluded:
+  - Carthage
+  - Pods
+custom_rules:
+  no_fatal_errors:
+    name: "Don't use fatalError()"
+    regex: "fatalError"
+    severity: error
+identifier_name:
+    min_length:
+        warning: 1
