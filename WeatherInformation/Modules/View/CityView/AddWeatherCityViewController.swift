@@ -23,47 +23,28 @@ class AddWeatherCityViewController: UIViewController, UITextFieldDelegate {
     private let reachability = try? Reachability()
     private var weatherListViewModel = WeatherListViewModel()
 
-
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        weatherListViewModel.delegateFetchData = self
+        weatherListViewModel.delegateFetchDataError = self
     }
     
     // MARK: testfield validation and API caling
     
     @IBAction private func saveCityButtonPressed() {
-        if cityNameTextField.text?.count ?? 0 > 0 {
-            self.weatherApiCall()
+        if let city = cityNameTextField.text {
+            self.getWeatherForCity(city : city)
         } else {
             AlertHandler.showAlert(forMessage: Constants.ShowAlert.enterCityName, title: Constants.ShowAlert.alertTitle, defaultButtonTitle: Constants.ShowAlert.okTitle, sourceViewController: self)
         }
     }
 
-    // MARK: - api calling
+    // MARK: - Get weather for entered city
     
-    private func weatherApiCall() {
-        
+    private func getWeatherForCity(city : String) {
         if ConnectionManager.shared.hasConnectivity() {
-            if let city = cityNameTextField.text {
-                MBProgressHUD.showAdded(to: self.view, animated: true)
-                weatherListViewModel.fetchData(city: city) { [weak self] result in
-                    guard let self = self else { return }
-                    DispatchQueue.main.async {
-                        MBProgressHUD.hide(for: self.view, animated: true)
-                    }
-                    switch result {
-                    case .success(let response):
-                        let weatherVM = WeatherViewModel(weather: response)
-                        self.delegate?.addWeatherDidSave(weatherVM: weatherVM)
-                        DispatchQueue.main.async {
-                            self.dismiss(animated: true, completion: nil)
-                        }
-                        
-                    case .failure(let error):
-                        AlertHandler.showAlert(forMessage: error.customMessage, title: Constants.ShowAlert.alertTitle, defaultButtonTitle: Constants.ShowAlert.okTitle, sourceViewController: self)
-                    }
-                }
-            }
+            MBProgressHUD.showAdded(to: self.view, animated: true)
+            weatherListViewModel.fetchWeatherData(city: city)
         } else {
             AlertHandler.showAlert(forMessage: Constants.Network.errorMessage, title: Constants.Network.errorTitle, defaultButtonTitle: Constants.ShowAlert.okTitle, sourceViewController: self)
         }
@@ -80,5 +61,30 @@ class AddWeatherCityViewController: UIViewController, UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         cityNameTextField.resignFirstResponder()
         return true
+    }
+}
+
+extension AddWeatherCityViewController: FetchWeatherDataDelegate {
+    
+    // MARK: - Receive weather data
+    
+    func didFetchWeatherData(weatherVM: WeatherViewModel) {
+        self.delegate?.addWeatherDidSave(weatherVM: weatherVM)
+        DispatchQueue.main.async {
+            MBProgressHUD.hide(for: self.view, animated: true)
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
+}
+
+extension AddWeatherCityViewController: ErrorDuringDataFetchingDelegate {
+    
+    // MARK: - Display alert for getting error in weather response
+    
+    func didFailedWithError(error: RequestError) {
+        DispatchQueue.main.async {
+            MBProgressHUD.hide(for: self.view, animated: true)
+        }
+        AlertHandler.showAlert(forMessage: error.customMessage, title: Constants.ShowAlert.alertTitle, defaultButtonTitle: Constants.ShowAlert.okTitle, sourceViewController: self)
     }
 }

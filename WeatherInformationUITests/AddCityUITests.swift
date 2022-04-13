@@ -57,15 +57,6 @@ class AddCityUITests: XCTestCase {
         timer.wait(for: 2)
         XCTAssert(app.alerts.element.exists)
     }
-    
-    func testAlertWhenEnteredCityNIsBlank() {
-        contentViewPage.addNavigationBar.tap()
-        contentViewPage.cityTextField.tap()
-        contentViewPage.cityTextField.typeText("") // Checking with blank city name
-        contentViewPage.btnSave.tap()
-        timer.wait(for: 2)
-        XCTAssert(app.alerts.element.exists)
-    }
 
     override func tearDown() {
         super.tearDown()

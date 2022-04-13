@@ -8,11 +8,20 @@
 
 import Foundation
 
+protocol FetchWeatherDataDelegate: AnyObject {
+    func didFetchWeatherData(weatherVM: WeatherViewModel)
+}
+
+protocol ErrorDuringDataFetchingDelegate: AnyObject {
+    func didFailedWithError(error: RequestError)
+}
+
 class WeatherListViewModel {
     
     private(set) var weatherViewModels = [WeatherViewModel]()
     private var weatherService = WeatherService()
-
+    weak var delegateFetchData: FetchWeatherDataDelegate?
+    weak var delegateFetchDataError: ErrorDuringDataFetchingDelegate?
     
     func addWeatherViewModel(_ weatherVM: WeatherViewModel) {
         weatherViewModels.append(weatherVM)
@@ -38,12 +47,25 @@ class WeatherListViewModel {
         
     }
     
-    // MARK: Calling API to fetch data 
+    // MARK:  API to fetch data 
     
-    public func fetchData(city: String, completion: @escaping (Result<WeatherResponse, RequestError>) -> Void) {
+    public func fetchWeatherData(city: String) {
         Task(priority: .background) {
             let result = await weatherService.getWeatherDetails(city: city, units: Constants.unit(), appID: Constants.appID)
-            completion(result)
+            getWeatherResponse(result: result)
+        }
+    }
+    
+    // MARK: Pass response to view 
+    
+    public func getWeatherResponse(result :Result<WeatherResponse, RequestError>) {
+        switch result {
+        case .success(let response):
+            let weatherVM = WeatherViewModel(weather: response)
+            self.delegateFetchData?.didFetchWeatherData(weatherVM: weatherVM)
+            
+        case .failure(let error):
+            self.delegateFetchDataError?.didFailedWithError(error: error)
         }
     }
     
@@ -57,6 +79,8 @@ class WeatherListViewModel {
             return weatherModel
         }
     }
+    
+    // MARK: Calling respective method to update unit
     
     func updateUnit(to unit: Unit) {
         switch unit {

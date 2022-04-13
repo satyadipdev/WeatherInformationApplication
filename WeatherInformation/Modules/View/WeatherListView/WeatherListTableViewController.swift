@@ -56,7 +56,7 @@ class WeatherListTableViewController: UITableViewController, AddWeatherDelegate 
         addWeatherCityVC?.delegate = self
     }
     
-    // MARK: tableview DataSources
+    // MARK: tableview Datasources
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return Constants.tableViewRowHeight
