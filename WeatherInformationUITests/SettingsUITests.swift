@@ -23,16 +23,16 @@ class SettingsUITests: XCTestCase {
         app.launch()
     }
         
-    func testCelciusSelectionCellExistance() {
+    func testCelsiusSelectionCellExistance() {
         contentViewPage.settingsNavBar.tap()
-        XCTAssert(app.tables.staticTexts[Constants.celcius].exists)
+        XCTAssert(app.tables.staticTexts[Constants.celsius].exists)
     }
     
     func testArbiratyChangeUnitsAndCheckNavaigationWorkStatus() {
         contentViewPage.settingsNavBar.tap()
-        app.tables.staticTexts[Constants.celcius].tap()
+        app.tables.staticTexts[Constants.celsius].tap()
         app.tables.staticTexts[Constants.fahrenheit].tap()
-        app.tables.staticTexts[Constants.celcius].tap()
+        app.tables.staticTexts[Constants.celsius].tap()
         contentViewPage.btnSettingsDone.tap()
         timer.wait(for: 0.5)
         XCTAssert(contentViewPage.launchNavigationBar.exists)
@@ -43,9 +43,9 @@ class SettingsUITests: XCTestCase {
         XCTAssert(app.tables.staticTexts[Constants.fahrenheit].exists)
     }
     
-    func testAppNavigateNextScreenAfterCelciusSelectionAndDoneButtonPressed() {
+    func testAppNavigateNextScreenAfterCelsiusSelectionAndDoneButtonPressed() {
         contentViewPage.settingsNavBar.tap()
-        app.tables.staticTexts[Constants.celcius].tap()
+        app.tables.staticTexts[Constants.celsius].tap()
         timer.wait(for: 0.5)
         contentViewPage.btnSettingsDone.tap()
         timer.wait(for: 0.5)

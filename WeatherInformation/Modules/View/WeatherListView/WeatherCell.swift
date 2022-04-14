@@ -16,8 +16,8 @@ class WeatherCell: UITableViewCell {
     
     // MARK: Updating weather cell
     
-     func configure(_ weatherVM: WeatherViewModel) {
-        self.cityNameLabel.text = weatherVM.city
-        self.temperatureLabel.text = weatherVM.temperature.formatTemperature()
+     func configure(_ weather: WeatherDetails) {
+        self.cityNameLabel.text = weather.city
+        self.temperatureLabel.text = weather.temperature.formatTemperature()
     }
 }

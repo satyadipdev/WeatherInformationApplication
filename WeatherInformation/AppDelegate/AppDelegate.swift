@@ -29,8 +29,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func setupDefaultSettings() {
         let userDefaults = UserDefaults.standard
-        if userDefaults.value(forKey: Constants.Units.defeultName) == nil {
-            userDefaults.set(Unit.fahrenheit.rawValue, forKey: Constants.Units.defeultName)
+        if userDefaults.value(forKey: Constants.Units.defaultName) == nil {
+            userDefaults.set(Unit.fahrenheit.rawValue, forKey: Constants.Units.defaultName)
         }
     }
 }

@@ -11,29 +11,32 @@ import XCTest
 
 class WeatherListViewModelTest: XCTestCase {
 
-    private var weatherListVM: WeatherListViewModel?
+    private var weatherList: WeatherListViewModel?
     var weatherService = WeatherService()
     
     override func setUp() {
         super.setUp()
-        self.weatherListVM = WeatherListViewModel()
+        self.weatherList = WeatherListViewModel()
         self.setMockForWeatherListViewModel()
         Constants.sessionConfiguration = DataMocker.getSessionConfiguration()
     }
+    
     func setMockForWeatherListViewModel() {
-        let weatherVM = WeatherViewModel(weather: WeatherResponse(name: "Kerala", main: Weather(temp: 40, humidity: 10)))
-        self.weatherListVM?.addWeatherViewModel(weatherVM)
+        let weatherDetails = WeatherDetails(weather: WeatherResponse(name: "Kerala", main: Weather(temp: 40, humidity: 10)))
+        self.weatherList?.addWeather(weather: weatherDetails)
     }
-    func testToCelcius() {
-        XCTAssertEqual(self.weatherListVM?.numberOfRows(0), 1)
-        XCTAssertNotNil(self.weatherListVM?.modelAt(0))
-        self.weatherListVM?.updateUnit(to: Unit.celsius)
-        let weatherModelcelsius = self.weatherListVM?.modelAt(0)
+    
+    func testToCelsius() {
+        XCTAssertEqual(self.weatherList?.numberOfCityToBeListed(section: 0), 1)
+        XCTAssertNotNil(self.weatherList?.weatherDetailsAtPosition(index: 0))
+        self.weatherList?.updateUnit(to: Unit.celsius)
+        let weatherModelcelsius = self.weatherList?.weatherDetailsAtPosition(index: 0)
         XCTAssertEqual(weatherModelcelsius?.temperature, 4.444444444444445)
     }
+    
     func testToFahrenheit() {
-        self.weatherListVM?.updateUnit(to: Unit.fahrenheit)
-        let weatherModel = self.weatherListVM?.modelAt(0)
+        self.weatherList?.updateUnit(to: Unit.fahrenheit)
+        let weatherModel = self.weatherList?.weatherDetailsAtPosition(index: 0)
         XCTAssertEqual(weatherModel?.temperature, 104.0)
     }
     
@@ -46,8 +49,8 @@ class WeatherListViewModelTest: XCTestCase {
         fetchData(city: "Kolkata") { result in
             switch result {
             case .success(let response):
-                let weatherVM = WeatherViewModel(weather: response)
-                XCTAssertEqual(weatherVM.city, "Kolkata")
+                let weatherDetails = WeatherDetails(weather: response)
+                XCTAssertEqual(weatherDetails.city, "Kolkata")
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -64,8 +67,8 @@ class WeatherListViewModelTest: XCTestCase {
         fetchData(city: "Kolkata") { result in
             switch result {
             case .success(let response):
-                let weatherVM = WeatherViewModel(weather: response)
-                XCTAssertEqual(weatherVM.city, "Kolkata")
+                let weatherDetails = WeatherDetails(weather: response)
+                XCTAssertEqual(weatherDetails.city, "Kolkata")
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -82,8 +85,8 @@ class WeatherListViewModelTest: XCTestCase {
         fetchData(city: "Kolkata") { result in
             switch result {
             case .success(let response):
-                let weatherVM = WeatherViewModel(weather: response)
-                XCTAssertEqual(weatherVM.city, "Kolkata")
+                let weatherDetails = WeatherDetails(weather: response)
+                XCTAssertEqual(weatherDetails.city, "Kolkata")
             case .failure(let error):
                 print(error)
             }
@@ -91,6 +94,7 @@ class WeatherListViewModelTest: XCTestCase {
         }
         waitForExpectations(timeout: 5, handler: nil)
     }
+    
     func testWeatherServiceApiUnownError() {
         DataMocker.setMockedData(mockData: [:],
                                      requestUrl: DataMocker.getServerUrl(),
@@ -99,8 +103,8 @@ class WeatherListViewModelTest: XCTestCase {
         fetchData(city: "Kolkata") { result in
             switch result {
             case .success(let response):
-                let weatherVM = WeatherViewModel(weather: response)
-                XCTAssertEqual(weatherVM.city, "Kolkata")
+                let weatherDetails = WeatherDetails(weather: response)
+                XCTAssertEqual(weatherDetails.city, "Kolkata")
             case .failure(let error):
                 print(error)
             }
@@ -115,9 +119,10 @@ class WeatherListViewModelTest: XCTestCase {
             completion(result)
         }
     }
+    
     override func tearDown() {
         super.tearDown()
         Constants.sessionConfiguration = URLSessionConfiguration.default
-        self.weatherListVM = nil
+        self.weatherList = nil
     }
 }

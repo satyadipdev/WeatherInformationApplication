@@ -19,19 +19,18 @@ class WeatherListTableViewController: UITableViewController, AddWeatherDelegate 
         
         self.navigationController?.navigationBar.prefersLargeTitles = true
         let userDefaults = UserDefaults.standard
-        if let value = userDefaults.value(forKey: Constants.Units.defeultName) as? String {
+        if let value = userDefaults.value(forKey: Constants.Units.defaultName) as? String {
             self.lastUnitSelection = Unit(rawValue: value)
         }
     }
     
     // MARK: update viewmodel and reload
     
-     func addWeatherDidSave(weatherVM: WeatherViewModel) {
-        weatherListViewModel.addWeatherViewModel(weatherVM)
+     func addWeatherDidSave(weather: WeatherDetails) {
+         weatherListViewModel.addWeather(weather: weather)
          DispatchQueue.main.async {
              self.tableView.reloadData()
          }
-        
     }
     
     // MARK: Navigation
@@ -45,15 +44,15 @@ class WeatherListTableViewController: UITableViewController, AddWeatherDelegate 
     }
     
     private func prepareSegueForSettingsTableViewController(segue: UIStoryboardSegue) {
-        let nav = segue.destination as? UINavigationController
-        let settingsTVC = nav?.viewControllers.first as? SettingsTableViewController
-        settingsTVC?.delegate = self
+        let navigationController = segue.destination as? UINavigationController
+        let settingsTableViewController = navigationController?.viewControllers.first as? SettingsTableViewController
+        settingsTableViewController?.delegate = self
     }
     
     private func prepareSegueForAddWeatherCityViewController(segue: UIStoryboardSegue) {
-        let nav = segue.destination as? UINavigationController
-        let addWeatherCityVC = nav?.viewControllers.first as? AddWeatherCityViewController
-        addWeatherCityVC?.delegate = self
+        let navigationController = segue.destination as? UINavigationController
+        let addWeatherCityViewController = navigationController?.viewControllers.first as? AddWeatherCityViewController
+        addWeatherCityViewController?.delegateAddWeather = self
     }
     
     // MARK: tableview Datasources
@@ -63,7 +62,7 @@ class WeatherListTableViewController: UITableViewController, AddWeatherDelegate 
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return weatherListViewModel.numberOfRows(section)
+        return weatherListViewModel.numberOfCityToBeListed(section: section)
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -71,8 +70,8 @@ class WeatherListTableViewController: UITableViewController, AddWeatherDelegate 
         guard let cell: WeatherCell = tableView.dequeueReusableCell(withIdentifier: Constants.Cells.weatherCell, for: indexPath) as?  WeatherCell else {
             return UITableViewCell()
         }
-        let weatherVM = weatherListViewModel.modelAt(indexPath.row)
-        cell.configure(weatherVM)
+        let weather = weatherListViewModel.weatherDetailsAtPosition(index: indexPath.row)
+        cell.configure(weather)
         return cell
     }
     
@@ -82,10 +81,10 @@ extension WeatherListTableViewController: SettingsDelegate {
     
     // MARK: updating unit and respective value and update UI
     
-     func settingsDone(settingsViewModel settingsVM: SettingsViewModel) {
-        if lastUnitSelection?.rawValue != settingsVM.selectedUnit?.rawValue {
-            weatherListViewModel.updateUnit(to: settingsVM.selectedUnit ?? Unit.fahrenheit)
-            lastUnitSelection = Unit(rawValue: settingsVM.selectedUnit?.rawValue ?? Unit.fahrenheit.rawValue) ?? Unit.fahrenheit
+     func settingsDone(settings: SettingsViewModel) {
+        if lastUnitSelection?.rawValue != settings.selectedUnit?.rawValue {
+            weatherListViewModel.updateUnit(to: settings.selectedUnit ?? Unit.fahrenheit)
+            lastUnitSelection = Unit(rawValue: settings.selectedUnit?.rawValue ?? Unit.fahrenheit.rawValue) ?? Unit.fahrenheit
             tableView.reloadData()
         }
     }

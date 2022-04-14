@@ -13,10 +13,10 @@ struct Constants {
     static let tableViewRowHeight = 100.0
     static let urlReachability = "www.google.com"
     static let unit = {
-        return (UserDefaults.standard.value(forKey: Units.defeultName) as? String) ?? "imperial"
+        return (UserDefaults.standard.value(forKey: Units.defaultName) as? String) ?? "imperial"
     }
     static let defaultCityText = "Enter City"
-    static let celcius = "Celcius"
+    static let celsius = "Celsius"
     static let fahrenheit = "Fahrenheit"
     static let mockURLString = "https://api.openweathermap.org/data/2.5/weather?q=Kerala&appid=ef0fd9866ca027e0dca474cee84c53be&units=imperial"
     static var sessionConfiguration = URLSessionConfiguration.default
@@ -29,13 +29,12 @@ struct Constants {
         static let segueSettingsettingsTableViewController = "SettingsTableViewController"
     }
     struct Units {
-        static let defeultName =  "unit"
+        static let defaultName =  "unit"
     }
     struct ShowAlert {
         static let enterCityName = "Please enter city name"
         static let okTitle = "OK"
         static let alertTitle = "Alert!"
-//        static let networkError = "Internet connection is not available"
     }
     static func readJSONFromFile(fileName: String) -> Any? {
         var json: Any?
@@ -50,8 +49,8 @@ struct Constants {
         }
         return json
     }
-    struct Network {
-        static let errorMessage = "Please check your internet connection and try again"
-        static let errorTitle = "No internet connection"
+    struct NetworkError {
+        static let message = "Please check your internet connection and try again"
+        static let title = "No internet connection"
     }
 }

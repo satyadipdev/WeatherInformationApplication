@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 protocol SettingsDelegate: AnyObject {
-    func settingsDone(settingsViewModel: SettingsViewModel)
+    func settingsDone(settings: SettingsViewModel)
 }
 
 class SettingsTableViewController: UITableViewController {
@@ -27,7 +27,7 @@ class SettingsTableViewController: UITableViewController {
     
     @IBAction private func done() {
         if let delegate = self.delegate {
-            delegate.settingsDone(settingsViewModel: settingsViewModel)
+            delegate.settingsDone(settings: settingsViewModel)
         }
         self.dismiss(animated: true, completion: nil)
     }
@@ -55,7 +55,7 @@ class SettingsTableViewController: UITableViewController {
         guard let cell: SettingsCell = tableView.dequeueReusableCell(withIdentifier: Constants.Cells.settingsCell, for: indexPath) as?  SettingsCell else {
             return UITableViewCell()
         }
-        cell.configure(settingsViewModel, row: indexPath.row)
+        cell.configure(settings: settingsViewModel, row: indexPath.row)
         return cell
     }
     

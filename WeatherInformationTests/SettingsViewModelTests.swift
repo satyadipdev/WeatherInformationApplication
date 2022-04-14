@@ -11,35 +11,35 @@ import XCTest
 
 class SettingsViewModelTests: XCTestCase {
 
-    private var settingsVM: SettingsViewModel?
+    private var settingsViewModel: SettingsViewModel?
     
     override func setUp() {
         super.setUp()
-        self.settingsVM = SettingsViewModel()
+        self.settingsViewModel = SettingsViewModel()
     }
     
     func testShouldReturnCorrectDisplayNameForFahrenheit() {
-        XCTAssertEqual(self.settingsVM?.selectedUnit?.displayName, Constants.fahrenheit)
+        XCTAssertEqual(self.settingsViewModel?.selectedUnit?.displayName, Constants.fahrenheit)
     }
     
     func testShouldMakeSureThatDefaultSelectedUnitIsFahrenheit() {
-        XCTAssertEqual(settingsVM?.selectedUnit, .fahrenheit)
+        XCTAssertEqual(settingsViewModel?.selectedUnit, .fahrenheit)
     }
     
     func testShouldBeAbleToSaveUserUnitSelection() {
-        self.settingsVM?.selectedUnit = .celsius
+        self.settingsViewModel?.selectedUnit = .celsius
         let userDefaults = UserDefaults.standard
-        XCTAssertNotNil(userDefaults.value(forKey: Constants.Units.defeultName))
-        XCTAssertEqual(self.settingsVM?.selectedUnit?.displayName, Constants.celcius)
-        self.settingsVM?.selectedUnit = .fahrenheit
-        XCTAssertNotNil(userDefaults.value(forKey: Constants.Units.defeultName))
-        XCTAssertEqual(self.settingsVM?.selectedUnit?.displayName, Constants.fahrenheit)
+        XCTAssertNotNil(userDefaults.value(forKey: Constants.Units.defaultName))
+        XCTAssertEqual(self.settingsViewModel?.selectedUnit?.displayName, Constants.celsius)
+        self.settingsViewModel?.selectedUnit = .fahrenheit
+        XCTAssertNotNil(userDefaults.value(forKey: Constants.Units.defaultName))
+        XCTAssertEqual(self.settingsViewModel?.selectedUnit?.displayName, Constants.fahrenheit)
     }
     
     override func tearDown() {
         super.tearDown()
         let userDefaults = UserDefaults.standard
-        userDefaults.removeObject(forKey: Constants.Units.defeultName)
-        self.settingsVM = nil
+        userDefaults.removeObject(forKey: Constants.Units.defaultName)
+        self.settingsViewModel = nil
     }
 }

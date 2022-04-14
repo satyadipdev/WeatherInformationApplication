@@ -21,7 +21,7 @@ extension Unit {
     var displayName: String {
         switch self {
         case .celsius:
-            return Constants.celcius
+            return Constants.celsius
         case .fahrenheit:
             return Constants.fahrenheit
         }
@@ -37,7 +37,7 @@ class SettingsViewModel {
     var selectedUnit: Unit? {
         get {
             let userDefaults = UserDefaults.standard
-            let value = userDefaults.value(forKey: Constants.Units.defeultName) as? String ?? Unit.fahrenheit.rawValue
+            let value = userDefaults.value(forKey: Constants.Units.defaultName) as? String ?? Unit.fahrenheit.rawValue
             
             var strUnit = Unit(rawValue: value)
             if value.isEmpty != true {
@@ -47,7 +47,7 @@ class SettingsViewModel {
         }
         set {
             let userDefault = UserDefaults.standard
-            userDefault.set(newValue?.rawValue, forKey: Constants.Units.defeultName)
+            userDefault.set(newValue?.rawValue, forKey: Constants.Units.defaultName)
         }
     }
     

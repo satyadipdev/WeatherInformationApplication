@@ -153,7 +153,7 @@
                     <navigationItem key="navigationItem" title="Add City" id="DT5-DG-USJ">
                         <barButtonItem key="leftBarButtonItem" title="Close" largeContentSizeImage="Close" id="6RV-uw-6ZX">
                             <connections>
-                                <action selector="close" destination="kr1-L8-Lo9" id="xHc-Ku-ktC"/>
+                                <action selector="closeButtonPressed" destination="kr1-L8-Lo9" id="oHw-PE-af4"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

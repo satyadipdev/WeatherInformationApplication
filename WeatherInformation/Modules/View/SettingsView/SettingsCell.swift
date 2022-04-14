@@ -14,12 +14,12 @@ class SettingsCell: UITableViewCell {
     
     // MARK: Updating settings cell
     
-    func configure(_ settingsViewModel: SettingsViewModel, row: Int) {
+    func configure(settings: SettingsViewModel, row: Int) {
         self.accessoryType = .none
-        if settingsViewModel.units.count >= row {
-            let settingsItem = settingsViewModel.units[row]
+        if settings.units.count >= row {
+            let settingsItem = settings.units[row]
             self.textLabel?.text = settingsItem.displayName
-            if settingsItem == settingsViewModel.selectedUnit {
+            if settingsItem == settings.selectedUnit {
                 self.accessoryType = .checkmark
             }
         }

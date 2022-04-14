@@ -9,18 +9,16 @@
 import Foundation
 import UIKit
 import MBProgressHUD
-import Reachability
 
 protocol AddWeatherDelegate: AnyObject {
-    func addWeatherDidSave(weatherVM: WeatherViewModel)
+    func addWeatherDidSave(weather: WeatherDetails)
 }
 
 class AddWeatherCityViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak private var cityNameTextField: UITextField!
     private var weatherService = WeatherService()
-    weak var delegate: AddWeatherDelegate?
-    private let reachability = try? Reachability()
+    weak var delegateAddWeather: AddWeatherDelegate?
     private var weatherListViewModel = WeatherListViewModel()
 
     override func viewDidLoad() {
@@ -46,13 +44,13 @@ class AddWeatherCityViewController: UIViewController, UITextFieldDelegate {
             MBProgressHUD.showAdded(to: self.view, animated: true)
             weatherListViewModel.fetchWeatherData(city: city)
         } else {
-            AlertHandler.showAlert(forMessage: Constants.Network.errorMessage, title: Constants.Network.errorTitle, defaultButtonTitle: Constants.ShowAlert.okTitle, sourceViewController: self)
+            AlertHandler.showAlert(forMessage: Constants.NetworkError.message, title: Constants.NetworkError.title, defaultButtonTitle: Constants.ShowAlert.okTitle, sourceViewController: self)
         }
     }
     
     // MARK: - close button Action
     
-    @IBAction private func close() {
+    @IBAction private func closeButtonPressed() {
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -66,10 +64,10 @@ class AddWeatherCityViewController: UIViewController, UITextFieldDelegate {
 
 extension AddWeatherCityViewController: FetchWeatherDataDelegate {
     
-    // MARK: - Receive weather data
+    // MARK: - Receive & pass weather data to AddWeatherCityViewController
     
-    func didFetchWeatherData(weatherVM: WeatherViewModel) {
-        self.delegate?.addWeatherDidSave(weatherVM: weatherVM)
+    func didFetchWeatherData(weather: WeatherDetails) {
+        self.delegateAddWeather?.addWeatherDidSave(weather: weather)
         DispatchQueue.main.async {
             MBProgressHUD.hide(for: self.view, animated: true)
             self.dismiss(animated: true, completion: nil)

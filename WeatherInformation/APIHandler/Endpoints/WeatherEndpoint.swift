@@ -24,7 +24,6 @@ extension WeatherEndpoint: Endpoint {
     }
     
     var header: [String: String]? {
-        // Access Token to use in Bearer header
         switch self {
         case .weather:
             return nil

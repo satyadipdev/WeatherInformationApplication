@@ -7,6 +7,7 @@
 //
 
 import Reachability
+
 class ConnectionManager {
 
     static let shared = ConnectionManager()

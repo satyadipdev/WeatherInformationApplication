@@ -9,7 +9,7 @@
 import Foundation
 
 protocol FetchWeatherDataDelegate: AnyObject {
-    func didFetchWeatherData(weatherVM: WeatherViewModel)
+    func didFetchWeatherData(weather: WeatherDetails)
 }
 
 protocol ErrorDuringDataFetchingDelegate: AnyObject {
@@ -17,34 +17,38 @@ protocol ErrorDuringDataFetchingDelegate: AnyObject {
 }
 
 class WeatherListViewModel {
-    
-    private(set) var weatherViewModels = [WeatherViewModel]()
+
+    private var weatherDetails = [WeatherDetails]()
     private var weatherService = WeatherService()
     weak var delegateFetchData: FetchWeatherDataDelegate?
     weak var delegateFetchDataError: ErrorDuringDataFetchingDelegate?
     
-    func addWeatherViewModel(_ weatherVM: WeatherViewModel) {
-        weatherViewModels.append(weatherVM)
+    // MARK: Method to add weather deatils
+    
+    func addWeather(weather: WeatherDetails) {
+        weatherDetails.append(weather)
     }
     
-    func numberOfRows(_ section: Int) -> Int {
-        return weatherViewModels.count
+    // MARK: Return the number of city to be displayed
+    
+    func numberOfCityToBeListed(section: Int) -> Int {
+        return weatherDetails.count
     }
     
-    func modelAt(_ index: Int) -> WeatherViewModel {
-        return weatherViewModels[index]
+    // MARK: Return weather details of specific index
+    
+    func weatherDetailsAtPosition(index: Int) -> WeatherDetails {
+        return weatherDetails[index]
     }
     
     // MARK: Convert Fahrenheit to Celsius
     
     private func toCelsius() {
-        
-        weatherViewModels = weatherViewModels.map { weatherVM in
-            let weatherModel = weatherVM
-            weatherModel.temperature = (weatherModel.temperature - 32) * 5/9
-            return weatherModel
+        weatherDetails = weatherDetails.map { weather in
+            let weatherDetails = weather
+            weatherDetails.temperature = (weather.temperature - 32) * 5/9
+            return weatherDetails
         }
-        
     }
     
     // MARK:  API to fetch data 
@@ -56,13 +60,13 @@ class WeatherListViewModel {
         }
     }
     
-    // MARK: Pass response to view 
+    // MARK: Pass response to view for update
     
     public func getWeatherResponse(result :Result<WeatherResponse, RequestError>) {
         switch result {
         case .success(let response):
-            let weatherVM = WeatherViewModel(weather: response)
-            self.delegateFetchData?.didFetchWeatherData(weatherVM: weatherVM)
+            let weather = WeatherDetails(weather: response)
+            self.delegateFetchData?.didFetchWeatherData(weather: weather)
             
         case .failure(let error):
             self.delegateFetchDataError?.didFailedWithError(error: error)
@@ -72,11 +76,10 @@ class WeatherListViewModel {
     // MARK: Convert Celsius to Fahrenheit
     
     private func toFahrenheit() {
-        
-        weatherViewModels = weatherViewModels.map { weatherVM in
-            let weatherModel = weatherVM
-            weatherModel.temperature = (weatherModel.temperature * 9/5) + 32
-            return weatherModel
+        weatherDetails = weatherDetails.map { weather in
+            let weatherDetails = weather
+            weatherDetails.temperature = (weatherDetails.temperature * 9/5) + 32
+            return weatherDetails
         }
     }
     
@@ -92,7 +95,7 @@ class WeatherListViewModel {
     }
 }
 
-class WeatherViewModel {
+class WeatherDetails {
 
     private let weather: WeatherResponse
     var temperature: Double
