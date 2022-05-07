@@ -22,11 +22,10 @@ $ git clone https://github.com/iosdevsatyadip/WeatherInformationIOS.git
 
 ## Key Swift Features
 
-* Test-driven development 
 * MVVM design pattern 
 * Network call 
 * Network Reachability
-* Protocol-Oriented Programming 
+* Protocol
 * Dependency Injection
 * Swiftlint
 * Unit Tests
